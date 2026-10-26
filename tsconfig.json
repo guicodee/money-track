@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "preserve",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@src/*": [
+        "./src/*"
+      ],
+      "@modules/*": [
+        "./src/app/modules/*"
+      ],
+      "@test/*": [
+        "./test/*"
+      ]
+    },
+    "rootDirs": [
+      "./src",
+      "./test"
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "*.ts"],
+  "exclude": ["**/*.spec.ts"]
+}
