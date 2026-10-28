@@ -1,10 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import { CreateUserController } from './create-user.controller';
 import { AutenticateController } from './autenticate.controller';
-import { refreshTokenController } from './refresh-token.controller';
-import { logoutController } from './logout.controller';
+import { CreateUserController } from './create-user.controller';
+import { deleteUserController } from './delete-user.controller';
 import { getMeController } from './get-me.controller';
-import { deleteMeController } from './delete-user.controller';
+import { logoutController } from './logout.controller';
+import { refreshTokenController } from './refresh-token.controller';
 
 export async function usersRoutes(app: FastifyInstance) {
 	app.post('/users/register', CreateUserController);
@@ -26,6 +26,6 @@ export async function usersRoutes(app: FastifyInstance) {
   app.delete(
     "/users/me",
     { preHandler: [app.authenticate] },
-    deleteMeController
+    deleteUserController
   );
 }
