@@ -1,6 +1,6 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import { MakeDeleteUser } from "@src/services/factory/make-delete-user";
 import { AppError } from "@src/errors/error";
+import { MakeDeleteUser } from "@src/services/factory/make-user";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const deleteUserService = MakeDeleteUser();
 

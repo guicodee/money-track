@@ -1,6 +1,5 @@
 import { AppError } from '@src/errors/error';
-import { MakeAutenticate } from '@src/services/factory/make-autenticate';
-import { MakeCreateUser } from '@src/services/factory/make-create-user';
+import { MakeAutenticate } from '@src/services/factory/make-user';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z, ZodError } from 'zod';
 

@@ -1,6 +1,6 @@
 import { AppError } from "@src/errors/error";
-import { MakeLogout } from "@src/services/factory/make-logout";
-import type { FastifyRequest, FastifyReply } from "fastify";
+import { MakeLogout } from "@src/services/factory/make-user";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const logoutService = MakeLogout();
 

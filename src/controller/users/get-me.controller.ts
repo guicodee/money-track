@@ -1,6 +1,6 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import { MakeGetMe } from "@src/services/factory/make-get-me";
 import { AppError } from "@src/errors/error";
+import { MakeGetMe } from "@src/services/factory/make-user";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const getMeService = MakeGetMe();
 

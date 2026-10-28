@@ -1,6 +1,6 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import { MakeRefreshToken } from "@src/services/factory/make-refresh-token";
 import { AppError } from "@src/errors/error";
+import { MakeRefreshToken } from "@src/services/factory/make-user";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 const refreshTokenService = MakeRefreshToken();
 
