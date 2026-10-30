@@ -3,6 +3,7 @@ import fastifyJwt from '@fastify/jwt';
 import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { accountsRoutes } from './controller/account/routes';
+import { categoryRoutes } from './controller/category/routes';
 import { usersRoutes } from './controller/users/routes';
 import { env } from './env';
 import { AppError } from './errors/error';
@@ -40,6 +41,7 @@ fastify.setErrorHandler((error, req, reply) => {
 
 fastify.register(usersRoutes);
 fastify.register(accountsRoutes);
+fastify.register(categoryRoutes);
 
 fastify
 	.listen({
