@@ -1,12 +1,12 @@
 import { SessionRepository } from "@src/repositories/implementations/session-repository";
 import { UsersRepository } from "@src/repositories/implementations/users-repository";
 import { BcryptHash } from "@src/utils/bcrypt";
-import { AutenticateService } from "../autenticate.service";
-import { CreateUserService } from "../create-user.service";
-import { DeleteMeService } from "../delete-user.service";
-import { GetMeService } from "../get-me.service";
-import { LogoutService } from "../logout-service.service";
-import { RefreshTokenService } from "../refresh-token.service";
+import { AutenticateService } from "../users/autenticate.service";
+import { CreateUserService } from "../users/create-user.service";
+import { DeleteMeService } from "../users/delete-user.service";
+import { GetMeService } from "../users/get-me.service";
+import { LogoutService } from "../users/logout-service.service";
+import { RefreshTokenService } from "../users/refresh-token.service";
 
 const users_repository = new UsersRepository();
 const session_repository = new SessionRepository();
