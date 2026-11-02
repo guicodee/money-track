@@ -9,6 +9,7 @@ export const accountTable = pgTable("account", {
 
   name: t.text("name").notNull(),
   initialBalance: t.numeric('initial_balance', { precision: 14, scale: 2 }).notNull().default("0.00"),
+  currentBalance: t.numeric("current_balance", { precision: 14, scale: 2 }).notNull().default("0.00"),
   currency: currencyEnum().notNull().default("BRL"),
   isActive: t.boolean("is_active").notNull().default(true),
 

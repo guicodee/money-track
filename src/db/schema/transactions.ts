@@ -18,6 +18,9 @@ export const transactionsTable = pgTable("transactions", {
   userId: t.integer("user_id").notNull().references(() => usersTable.id, { onDelete: "restrict" }),
   accountId: t.integer("account_id").notNull().references(() => accountTable.id, { onDelete: "restrict" }),
   categoryId: t.integer("category_id").references(() => categoryTable.id, { onDelete: "restrict" }),
+ 
+  deletedAt: t.timestamp("deleted_at", { withTimezone: true }),
+  appliedAt: t.timestamp("applied_at", { withTimezone: true }),
 
   createdAt: t.timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: t.timestamp('updated_at', { withTimezone: true }).defaultNow().$onUpdate(() => new Date()).notNull(),
@@ -71,5 +74,20 @@ export const transactionsTable = pgTable("transactions", {
       table.categoryId,
       table.occurredAt,
     ),
+
+    t.check(
+      "transactions_transfer_not_applied",
+      sql`${table.operationType} <> 'TRANSFER' OR ${table.appliedAt} IS NULL`,
+    ),
+
+    t.check(
+      "transactions_deleted_not_applied",
+      sql`${table.deletedAt} IS NULL OR ${table.appliedAt} IS NULL`,
+    ),
+
+    t.index("transactions_pending_index")
+      .on(table.occurredAt)
+      .where(sql`${table.deletedAt} IS NULL AND ${table.appliedAt} IS NULL AND ${table.operationType} <> 'TRANSFER'`,
+      ),
   ],
 );
