@@ -4,6 +4,7 @@ export interface AccountDto {
   id: number;
   name: string;
   initialBalance: string; 
+  currentBalance: string; 
   currency: Currency;
   isActive: boolean;
   userId: number;
@@ -20,5 +21,6 @@ export interface CreateAccountDto {
 
 export interface UpdateAccountDto {
   name?: string;
+  initialBalance: string; 
   isActive?: boolean;
 }
