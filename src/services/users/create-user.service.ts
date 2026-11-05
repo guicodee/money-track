@@ -24,6 +24,8 @@ export class CreateUserService {
 			password: password_hash,
 		});
 
-		return { user };
+		return {
+  		user: { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt },
+		};
 	}
 }

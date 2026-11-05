@@ -1,6 +1,8 @@
+import type { JWT } from "@fastify/jwt";
 import { SessionRepository } from "@src/repositories/implementations/session-repository";
 import { UsersRepository } from "@src/repositories/implementations/users-repository";
 import { BcryptHash } from "@src/utils/bcrypt";
+import { TokenService } from "@src/utils/token";
 import { AutenticateService } from "../users/autenticate.service";
 import { CreateUserService } from "../users/create-user.service";
 import { DeleteMeService } from "../users/delete-user.service";
@@ -12,10 +14,11 @@ const users_repository = new UsersRepository();
 const session_repository = new SessionRepository();
 const bcrypt_hash = new BcryptHash();
 
-export const MakeAutenticate = () => new AutenticateService(
+export const MakeAutenticate = (jwt: JWT) => new AutenticateService(
   users_repository, 
   session_repository, 
-  bcrypt_hash
+  bcrypt_hash,
+  new TokenService(jwt)
 );
 export const MakeCreateUser = () => new CreateUserService(
   users_repository, 
@@ -24,4 +27,7 @@ export const MakeCreateUser = () => new CreateUserService(
 export const MakeDeleteUser = () => new DeleteMeService(users_repository);
 export const MakeGetMe = () => new GetMeService(users_repository);
 export const MakeLogout = () => new LogoutService(session_repository);
-export const MakeRefreshToken = () => new RefreshTokenService(session_repository);
+export const MakeRefreshToken = (jwt: JWT) => new RefreshTokenService(
+  session_repository, 
+  new TokenService(jwt)
+);

@@ -8,13 +8,11 @@ const autenticateSchema = z.object({
   password: z.string().min(8),
 });
 
-const autenticateService = MakeAutenticate();
-
 export async function AutenticateController(req: FastifyRequest, reply: FastifyReply) {
   const { email, password } = autenticateSchema.parse(req.body);
 
   try {
-    const { user, accessToken, refreshToken } = await autenticateService.execute({ 
+    const { user, accessToken, refreshToken } = await MakeAutenticate(req.server.jwt).execute({ 
       email, 
       password, 
       userAgent: req.headers['user-agent'], 

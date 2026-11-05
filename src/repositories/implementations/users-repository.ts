@@ -1,9 +1,8 @@
-import type { createUserDto, userDto } from "@src/dto/user-dto";
-import type { IUserRepository } from "../interfaces/user-repository-interface";
 import { db } from "@src/db";
 import { usersTable } from "@src/db/schema/users";
-import bcrypt from "bcryptjs";
+import type { createUserDto, userDto } from "@src/dto/user-dto";
 import { eq } from "drizzle-orm";
+import type { IUserRepository } from "../interfaces/user-repository-interface";
 
 export class UsersRepository implements IUserRepository {
   async findById(id: number): Promise<userDto | null> {
