@@ -8,6 +8,8 @@ import { usersRoutes } from './controller/users/routes';
 import { env } from './env';
 import { AppError } from './errors/error';
 import { authenticate } from './middlewares/authenticate';
+import { transactionRoutes } from './controller/transaction/routes';
+import { startDueTransactionsJob } from './utils/proccess-due-transactions';
 
 export const fastify = Fastify({
   logger: true
@@ -42,6 +44,9 @@ fastify.setErrorHandler((error, req, reply) => {
 fastify.register(usersRoutes);
 fastify.register(accountsRoutes);
 fastify.register(categoryRoutes);
+fastify.register(transactionRoutes);
+
+fastify.addHook("onReady", async () => startDueTransactionsJob(fastify));
 
 fastify
 	.listen({
