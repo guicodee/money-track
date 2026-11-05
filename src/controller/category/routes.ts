@@ -1,5 +1,4 @@
-// src/controllers/category/category-routes.ts
-import { authenticate } from "@src/middlewares/authenticate"; // ajuste o caminho
+import { authenticate } from "@src/middlewares/authenticate";
 import type { FastifyInstance } from "fastify";
 import { createCategoryController } from "./create-category.controller";
 import { deleteCategoryController } from "./delete-category.controller";

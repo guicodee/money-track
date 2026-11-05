@@ -4,7 +4,7 @@ import { createHash, randomUUID } from "crypto";
 export interface AccessTokenPayload {
   sub: number;
   email: string;
-  sid: number; // id da sessão
+  sid: number;
 }
 
 export interface RefreshTokenPayload {
