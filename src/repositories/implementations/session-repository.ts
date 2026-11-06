@@ -1,8 +1,8 @@
 import { db } from "@src/db";
 import { sessionsTable } from "@src/db/schema/sessions";
-import { eq, and, isNull, gt } from "drizzle-orm";
-import type { ISessionRepository } from "../interfaces/session-repository-interface";
 import type { CreateSessionDto, SessionDto } from "@src/dto/session-dto";
+import { and, eq, gt, isNull } from "drizzle-orm";
+import type { ISessionRepository } from "../interfaces/session-repository-interface";
 
 export class SessionRepository implements ISessionRepository {
   async findActiveById(id: number): Promise<SessionDto | null> {
@@ -38,7 +38,8 @@ export class SessionRepository implements ISessionRepository {
       .where(
         and(
           eq(sessionsTable.refreshTokenHash, hash),
-          isNull(sessionsTable.revokedAt), 
+          isNull(sessionsTable.revokedAt),
+          gt(sessionsTable.expiresAt, new Date()),
         )
       )
       .limit(1);
