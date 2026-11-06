@@ -13,7 +13,7 @@
         "./src/app/modules/*"
       ],
       "@test/*": [
-        "./test/*"
+        "./tests/*"
       ]
     },
     "rootDirs": [
