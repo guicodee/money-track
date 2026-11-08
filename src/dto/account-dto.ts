@@ -21,6 +21,6 @@ export interface CreateAccountDto {
 
 export interface UpdateAccountDto {
   name?: string;
-  initialBalance: string; 
+  initialBalance?: string; 
   isActive?: boolean;
 }

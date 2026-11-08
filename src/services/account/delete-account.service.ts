@@ -1,4 +1,4 @@
-import { AppError } from "@src/errors/error";
+import { AppError, isForeignKeyViolation } from "@src/errors/error";
 import type { IAccountRepository } from "@src/repositories/interfaces/account-repository-interface";
 
 export class DeleteAccountService {
@@ -15,6 +15,14 @@ export class DeleteAccountService {
       throw new AppError("Account has transactions. Deactivate it instead of deleting", 409);
     }
 
-    await this.accountRepository.delete(userId);
+    try {
+      await this.accountRepository.delete(userId);
+    } catch (error) {
+      if (isForeignKeyViolation(error)) {
+        throw new AppError("Account has transactions. Deactivate it instead of deleting", 409);
+      }
+      
+      throw error;
+    }
   }
 }

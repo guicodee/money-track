@@ -7,7 +7,7 @@ import { categoryRoutes } from "./controller/category/routes";
 import { transactionRoutes } from "./controller/transaction/routes";
 import { usersRoutes } from "./controller/users/routes";
 import { env } from "./env";
-import { AppError } from "./errors/error";
+import { AppError, isNumericOutOfRange } from "./errors/error";
 import { authenticate } from "./middlewares/authenticate";
 
 export function buildApp() {
@@ -30,6 +30,11 @@ export function buildApp() {
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({ message: error.message });
     }
+
+    if (isNumericOutOfRange(error)) {
+      return reply.status(400).send({ message: "Amount out of the allowed range" });
+    }
+    
     req.log.error(error);
     return reply.status(500).send({ message: "Internal server error" });
   });

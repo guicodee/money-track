@@ -18,3 +18,13 @@ export function isUniqueViolation(error: unknown): boolean {
   const e = error as { code?: string; cause?: { code?: string } };
   return e?.code === "23505" || e?.cause?.code === "23505";
 }
+
+export function isForeignKeyViolation(error: unknown): boolean {
+  const e = error as { code?: string; cause?: { code?: string } };
+  return e?.code === "23503" || e?.cause?.code === "23503";
+}
+
+export function isNumericOutOfRange(error: unknown): boolean {
+  const e = error as { code?: string; cause?: { code?: string } };
+  return e?.code === "22003" || e?.cause?.code === "22003";
+}

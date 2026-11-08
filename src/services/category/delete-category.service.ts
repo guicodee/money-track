@@ -1,11 +1,6 @@
 import type { FindCategoryDto } from "@src/dto/category-dto";
-import { AppError, ConflictError } from "@src/errors/error";
+import { AppError, ConflictError, isForeignKeyViolation } from "@src/errors/error";
 import type { ICategoryRepository } from "@src/repositories/interfaces/category-repository-interface";
-
-function isForeignKeyViolation(error: unknown): boolean {
-  const e = error as { code?: string; cause?: { code?: string } };
-  return e?.code === "23503" || e?.cause?.code === "23503";
-}
 
 export class DeleteCategoryService {
   constructor(private readonly categoryRepository: ICategoryRepository) {}
