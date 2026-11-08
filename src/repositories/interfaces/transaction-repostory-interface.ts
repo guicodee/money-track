@@ -1,12 +1,11 @@
-import type { 
-  CreateTransactionDto, 
-  ListTransactionsRepositoryDto, 
-  ListTransactionsResultDto, 
-  TransactionAccountDto, 
-  TransactionDto, 
-  UpdateTransactionDataDto 
+import type {
+  CreateTransactionDto,
+  ListTransactionsRepositoryDto,
+  ListTransactionsResultDto,
+  TransactionAccountDto,
+  TransactionDto,
+  UpdateTransactionDataDto
 } from "@src/dto/transaction-dto";
-
 
 export interface ITransactionRepository {
   findAccount(accountId: number, userId: number): Promise<TransactionAccountDto | null>;

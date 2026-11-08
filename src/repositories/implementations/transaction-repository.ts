@@ -1,4 +1,3 @@
-import { and, asc, count, desc, eq, gte, inArray, isNull, lt, lte, ne, sql } from "drizzle-orm";
 import { db } from "@src/db";
 import { accountTable } from "@src/db/schema/account";
 import { categoryTable } from "@src/db/schema/category";
@@ -12,6 +11,8 @@ import type {
   TransactionDto,
   UpdateTransactionDataDto,
 } from "@src/dto/transaction-dto";
+import { AppError, ConflictError } from "@src/errors/error";
+import { and, asc, count, desc, eq, gte, inArray, isNull, lt, lte, ne, sql } from "drizzle-orm";
 import type { ITransactionRepository } from "../interfaces/transaction-repostory-interface";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
@@ -61,6 +62,20 @@ function toDto({ appliedAt, ...row }: DetailRow): TransactionDto {
   return { ...row, status };
 }
 
+async function lockActiveAccounts(tx: Tx, accountIds: number[], userId: number) {
+    for (const id of [...new Set(accountIds)].sort((a, b) => a - b)) {
+      const [account] = await tx
+        .select({ isActive: accountTable.isActive })
+        .from(accountTable)
+        .where(and(eq(accountTable.id, id), eq(accountTable.userId, userId)))
+        .for("update");
+      if (!account) throw new AppError("Account not found", 404);
+      if (!account.isActive) {
+        throw new ConflictError("Inactive account does not allow operations in transactions");
+      }
+    }
+  }
+
 export class TransactionRepository implements ITransactionRepository {
   private selectDetail() {
     return db
@@ -81,6 +96,8 @@ export class TransactionRepository implements ITransactionRepository {
 
   async create(data: CreateTransactionDto): Promise<TransactionDto> {
     const id = await db.transaction(async (tx) => {
+      await lockActiveAccounts(tx, [data.accountId], data.userId);
+
       const now = new Date();
       const delta = signedAmount(data.operationType, data.amount);
       const applied = delta !== null && data.occurredAt.getTime() <= now.getTime();
@@ -152,7 +169,10 @@ export class TransactionRepository implements ITransactionRepository {
           ),
         )
         .for("update");
+
       if (!current) return false;
+
+      await lockActiveAccounts(tx, [current.accountId, data.accountId ?? current.accountId], userId);
 
       const now = new Date();
       const operationType = data.operationType ?? current.operationType;
@@ -210,7 +230,10 @@ export class TransactionRepository implements ITransactionRepository {
           ),
         )
         .for("update");
+
       if (!current) return false; 
+
+      await lockActiveAccounts(tx, [current.accountId], userId);
 
       if (current.appliedAt) {
         const delta = signedAmount(current.operationType, current.amount);
@@ -239,17 +262,19 @@ export class TransactionRepository implements ITransactionRepository {
           amount: transactionsTable.amount,
         })
         .from(transactionsTable)
+        .innerJoin(accountTable, eq(accountTable.id, transactionsTable.accountId))
         .where(
           and(
             isNull(transactionsTable.deletedAt),
             isNull(transactionsTable.appliedAt),
             ne(transactionsTable.operationType, "TRANSFER"),
             lte(transactionsTable.occurredAt, now),
+            eq(accountTable.isActive, true),
           ),
         )
         .orderBy(asc(transactionsTable.accountId), asc(transactionsTable.id))
         .limit(limit)
-        .for("update", { skipLocked: true });
+        .for("update", { skipLocked: true })
 
       for (const row of due) {
         const delta = signedAmount(row.operationType, row.amount);
