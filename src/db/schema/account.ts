@@ -1,5 +1,5 @@
-import { pgTable } from "drizzle-orm/pg-core";
 import * as t from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
 import { usersTable } from "./users";
 
 export const currencyEnum = t.pgEnum("currency", ["BRL", "USD"]);
@@ -22,5 +22,6 @@ export const accountTable = pgTable("account", {
     t.unique("accounts_user_id_id_unique").on(table.userId, table.id),
     t.unique("accounts_user_name_unique").on(table.userId, table.name),
     t.index("accounts_user_id_index").on(table.userId),
+    t.unique("accounts_user_id_unique").on(table.userId),
   ],
 );
