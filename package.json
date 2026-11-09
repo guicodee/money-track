@@ -17,6 +17,7 @@
     "test": "vitest run --no-file-parallelism",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration --no-file-parallelism",
+    "test:e2e": "vitest run --project e2e --no-file-parallelism",
     "test:coverage": "vitest run --coverage --no-file-parallelism",
     "db:test:up": "docker compose -f docker-compose.test.yml up -d --wait",
     "db:test:down": "docker compose -f docker-compose.test.yml down"

@@ -39,6 +39,17 @@ export default defineConfig({
           testTimeout: 15_000,
         },
       },
+      {
+        resolve: { alias },
+        test: {
+          name: "e2e",
+          include: ["src/tests/e2e/**/*.test.ts"],
+          environment: "node",
+          env: loadTestEnv(),
+          globalSetup: ["src/tests/setup/global-setup.ts"],
+          testTimeout: 20_000,
+        },
+      },
     ],
   },
 });
