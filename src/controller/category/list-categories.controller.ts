@@ -1,10 +1,11 @@
 import { MakeListCategoriesService } from "@src/services/factory/make-category";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { pageSchema } from "../shared/fieds";
 
 const querySchema = z.object({
   type: z.enum(["EXPENSE", "INCOME"]).optional(),
-  page: z.coerce.number().int().min(1).default(1),
+  page: pageSchema
 });
 
 export async function listCategoriesController(req: FastifyRequest, reply: FastifyReply) {

@@ -1,5 +1,6 @@
-import { pgTable } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import * as t from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
 import { usersTable } from "./users";
 
 export const categoryTypeEnum = t.pgEnum("categoryType", ["EXPENSE", "INCOME"]);
@@ -17,9 +18,9 @@ export const categoryTable = pgTable("category", {
 },
   (table) => [
     t.unique("categories_user_id_id_unique").on(table.userId, table.id),
-    t.unique("categories_user_name_type_unique").on(
+    t.uniqueIndex("categories_user_name_type_lower_unique").on(
       table.userId,
-      table.description,
+      sql`lower(${table.description})`,
       table.categoryType,
     ),
     t.index("categories_user_id_index").on(table.userId),

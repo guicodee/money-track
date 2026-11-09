@@ -9,6 +9,7 @@ import type {
   ListCategoriesResultDto,
   UpdateCategoryDataDto,
 } from "@src/dto/category-dto";
+import { ConflictError } from "@src/errors/error";
 import { and, asc, count, eq, ne, sql } from "drizzle-orm";
 import type { ICategoryRepository } from "../interfaces/category-repository-interface";
 
@@ -70,12 +71,32 @@ export class CategoryRepository implements ICategoryRepository {
     userId: number,
     data: UpdateCategoryDataDto,
   ): Promise<CategoryDto | null> {
-    const [category] = await db
-      .update(categoryTable)
-      .set(data)
-      .where(and(eq(categoryTable.id, id), eq(categoryTable.userId, userId)))
-      .returning();
-    return category ?? null;
+    return db.transaction(async (tx) => {
+      const [current] = await tx
+        .select()
+        .from(categoryTable)
+        .where(and(eq(categoryTable.id, id), eq(categoryTable.userId, userId)))
+        .for("update");
+      if (!current) return null;
+
+      if (data.categoryType !== undefined && data.categoryType !== current.categoryType) {
+        const [used] = await tx
+          .select({ id: transactionsTable.id })
+          .from(transactionsTable)
+          .where(and(eq(transactionsTable.categoryId, id), eq(transactionsTable.userId, userId)))
+          .limit(1);
+        if (used) {
+          throw new ConflictError("Not is possible alter the type of a category vinculed the transactions");
+        }
+      }
+
+      const [category] = await tx
+        .update(categoryTable)
+        .set(data)
+        .where(eq(categoryTable.id, id))
+        .returning();
+      return category ?? null;
+    });
   }
 
   async delete(id: number, userId: number): Promise<boolean> {

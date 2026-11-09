@@ -1,9 +1,10 @@
 import { MakeUpdateCategoryService } from "@src/services/factory/make-category";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { idSchema } from "../shared/fieds";
 
 const paramsSchema = z.object({
-  id: z.coerce.number().int().positive(),
+  id: idSchema
 });
 
 const bodySchema = z
