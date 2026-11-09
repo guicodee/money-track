@@ -1,0 +1,2 @@
+ALTER TABLE "category" DROP CONSTRAINT "categories_user_name_type_unique";--> statement-breakpoint
+CREATE UNIQUE INDEX "categories_user_name_type_lower_unique" ON "category" USING btree ("user_id",lower("description"),"categoryType");

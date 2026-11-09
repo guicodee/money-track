@@ -1,4 +1,4 @@
-import { pgTable, index, foreignKey, unique, integer, text, numeric, boolean, timestamp, check, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, index, foreignKey, unique, integer, text, numeric, boolean, timestamp, uniqueIndex, check, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const categoryType = pgEnum("categoryType", ['EXPENSE', 'INCOME'])
@@ -26,6 +26,7 @@ export const account = pgTable("account", {
 		}).onDelete("restrict"),
 	unique("accounts_user_id_id_unique").on(table.id, table.userId),
 	unique("accounts_user_name_unique").on(table.name, table.userId),
+	unique("accounts_user_id_unique").on(table.userId),
 ]);
 
 export const users = pgTable("users", {
@@ -49,13 +50,13 @@ export const category = pgTable("category", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 }, (table) => [
 	index("categories_user_id_index").using("btree", table.userId.asc().nullsLast().op("int4_ops")),
+	uniqueIndex("categories_user_name_type_lower_unique").using("btree", sql`user_id`, sql`lower(description)`, sql`categoryType`),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
 			name: "category_user_id_users_id_fk"
 		}).onDelete("restrict"),
 	unique("categories_user_id_id_unique").on(table.id, table.userId),
-	unique("categories_user_name_type_unique").on(table.description, table.categoryType, table.userId),
 ]);
 
 export const sessions = pgTable("sessions", {
