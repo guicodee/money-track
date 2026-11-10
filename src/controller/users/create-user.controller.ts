@@ -21,7 +21,7 @@ export async function CreateUserController(req: FastifyRequest, reply: FastifyRe
       id: user.id,
       name: user.name,
       email: user.email,
-      created_at: user.createdAt,
+      createdAt: user.createdAt,
      });
 
 	} catch (error) {

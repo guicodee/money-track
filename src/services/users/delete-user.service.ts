@@ -1,4 +1,4 @@
-import { AppError } from "@src/errors/error";
+import { AppError, ConflictError, isForeignKeyViolation } from "@src/errors/error";
 import type { IUserRepository } from "@src/repositories/interfaces/user-repository-interface";
 
 export class DeleteMeService {
@@ -11,6 +11,13 @@ export class DeleteMeService {
       throw new AppError("User not found", 404);
     }
 
-    await this.usersRepository.deleteById(userId);
+    try {
+      await this.usersRepository.deleteById(userId);
+    } catch (error) {
+      if (isForeignKeyViolation(error)) {
+        throw new ConflictError("Delete your account and categories before deleting your user");
+      }
+      throw error;
+    }
   }
 }
