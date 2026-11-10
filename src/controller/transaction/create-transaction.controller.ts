@@ -1,16 +1,17 @@
+import { MakeCreateTransactionService } from "@src/services/factory/make-transaction";
+import { startOfDaySaoPaulo } from "@src/utils/date";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { startOfDaySaoPaulo } from "@src/utils/date";
+import { bodyIdSchema } from "../shared/fieds";
 import { amountSchema, dateOnlySchema, operationTypeSchema } from "./transaction-fields";
-import { MakeCreateTransactionService } from "@src/services/factory/make-transaction";
 
 const bodySchema = z.object({
   description: z.string().trim().min(1).max(255),
   amount: amountSchema,
   operationType: operationTypeSchema,
   occurredAt: dateOnlySchema,
-  accountId: z.number().int().positive(),
-  categoryId: z.number().int().positive().nullable().optional(),
+  accountId: bodyIdSchema,
+  categoryId: bodyIdSchema.nullable().optional()
 });
 
 export async function createTransactionController(req: FastifyRequest, reply: FastifyReply) {

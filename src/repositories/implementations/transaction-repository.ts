@@ -63,18 +63,38 @@ function toDto({ appliedAt, ...row }: DetailRow): TransactionDto {
 }
 
 async function lockActiveAccounts(tx: Tx, accountIds: number[], userId: number) {
-    for (const id of [...new Set(accountIds)].sort((a, b) => a - b)) {
-      const [account] = await tx
-        .select({ isActive: accountTable.isActive })
-        .from(accountTable)
-        .where(and(eq(accountTable.id, id), eq(accountTable.userId, userId)))
-        .for("update");
-      if (!account) throw new AppError("Account not found", 404);
-      if (!account.isActive) {
-        throw new ConflictError("Inactive account does not allow operations in transactions");
-      }
+  for (const id of [...new Set(accountIds)].sort((a, b) => a - b)) {
+    const [account] = await tx
+      .select({ isActive: accountTable.isActive })
+      .from(accountTable)
+      .where(and(eq(accountTable.id, id), eq(accountTable.userId, userId)))
+      .for("update");
+    if (!account) throw new AppError("Account not found", 404);
+    if (!account.isActive) {
+      throw new ConflictError("Inactive account does not allow operations in transactions");
     }
   }
+}
+
+async function lockCategoryForOperation(
+  tx: Tx,
+  categoryId: number,
+  userId: number,
+  operationType: OperationType,
+) {
+  const [category] = await tx
+    .select({ categoryType: categoryTable.categoryType })
+    .from(categoryTable)
+    .where(and(eq(categoryTable.id, categoryId), eq(categoryTable.userId, userId)))
+    .for("share");
+  if (!category) throw new AppError("Category not found", 404);
+  if (category.categoryType !== operationType) {
+    throw new AppError(
+      `Category of type ${category.categoryType} cannot be used in transaction of type ${operationType}`,
+      400,
+    );
+  }
+}
 
 export class TransactionRepository implements ITransactionRepository {
   private selectDetail() {
@@ -97,6 +117,10 @@ export class TransactionRepository implements ITransactionRepository {
   async create(data: CreateTransactionDto): Promise<TransactionDto> {
     const id = await db.transaction(async (tx) => {
       await lockActiveAccounts(tx, [data.accountId], data.userId);
+
+      if (data.operationType !== "TRANSFER" && data.categoryId !== null) {
+        await lockCategoryForOperation(tx, data.categoryId, data.userId, data.operationType);
+      }
 
       const now = new Date();
       const delta = signedAmount(data.operationType, data.amount);
@@ -173,6 +197,12 @@ export class TransactionRepository implements ITransactionRepository {
       if (!current) return false;
 
       await lockActiveAccounts(tx, [current.accountId, data.accountId ?? current.accountId], userId);
+
+      const nextOperationType = data.operationType ?? current.operationType;
+      const nextCategoryId = data.categoryId !== undefined ? data.categoryId : current.categoryId;
+      if (nextOperationType !== "TRANSFER" && nextCategoryId !== null) {
+        await lockCategoryForOperation(tx, nextCategoryId, userId, nextOperationType);
+      }
 
       const now = new Date();
       const operationType = data.operationType ?? current.operationType;

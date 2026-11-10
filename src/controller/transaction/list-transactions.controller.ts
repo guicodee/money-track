@@ -1,17 +1,18 @@
+import { MakeListTransactionsService } from "@src/services/factory/make-transaction";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { idSchema, pageSchema } from "../shared/fieds";
 import { dateOnlySchema, operationTypeSchema } from "./transaction-fields";
-import { MakeListTransactionsService } from "@src/services/factory/make-transaction";
 
 const querySchema = z
   .object({
     type: operationTypeSchema.optional(),
-    accountId: z.coerce.number().int().positive().optional(),
-    categoryId: z.coerce.number().int().positive().optional(),
+    accountId: idSchema.optional(),
+    categoryId: idSchema.optional(),
     startDate: dateOnlySchema.optional(),
     endDate: dateOnlySchema.optional(),
     period: z.enum(["7d", "30d", "365d"]).optional(),
-    page: z.coerce.number().int().min(1).default(1),
+    page: pageSchema
   })
   .refine((q) => !(q.period && (q.startDate || q.endDate)), {
     message: "period cannot be combined with startDate/endDate",

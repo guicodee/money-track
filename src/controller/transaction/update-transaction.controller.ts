@@ -1,11 +1,12 @@
+import { MakeUpdateTransactionService } from "@src/services/factory/make-transaction";
+import { startOfDaySaoPaulo } from "@src/utils/date";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { startOfDaySaoPaulo } from "@src/utils/date";
+import { bodyIdSchema, idSchema } from "../shared/fieds";
 import { amountSchema, dateOnlySchema, operationTypeSchema } from "./transaction-fields";
-import { MakeUpdateTransactionService } from "@src/services/factory/make-transaction";
 
 const paramsSchema = z.object({
-  id: z.coerce.number().int().positive(),
+  id: idSchema
 });
 
 const bodySchema = z
@@ -14,8 +15,8 @@ const bodySchema = z
     amount: amountSchema.optional(),
     operationType: operationTypeSchema.optional(),
     occurredAt: dateOnlySchema.optional(),
-    accountId: z.number().int().positive().optional(),
-    categoryId: z.number().int().positive().nullable().optional(),
+    accountId: bodyIdSchema.optional(),
+    categoryId: bodyIdSchema.nullable().optional()
   })
   .refine((d) => Object.keys(d).length > 0, {
     message: "Report at least one field to update",

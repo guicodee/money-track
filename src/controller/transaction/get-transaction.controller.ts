@@ -1,9 +1,10 @@
 import { MakeGetTransactionService } from "@src/services/factory/make-transaction";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { idSchema } from "../shared/fieds";
 
 const paramsSchema = z.object({
-  id: z.coerce.number().int().positive(),
+  id: idSchema
 });
 
 export async function getTransactionController(req: FastifyRequest, reply: FastifyReply) {
