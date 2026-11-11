@@ -76,6 +76,15 @@ describe("DeleteMeService", () => {
 
     await expect(new DeleteMeService(repo).execute(7)).rejects.toBe(error);
   });
+
+  it("converte a violação de FK (usuário com conta ou categorias) em 409", async () => {
+    const repo = {
+      findById: vi.fn().mockResolvedValue(makeUser({ id: 7 })),
+      deleteById: vi.fn().mockRejectedValue({ cause: { code: "23503" } }),
+    } as any;
+
+    await expect(new DeleteMeService(repo).execute(7)).rejects.toMatchObject({ statusCode: 409 });
+  });
 });
 
 describe("LogoutService", () => {
