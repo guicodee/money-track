@@ -1,4 +1,3 @@
-# docker-compose.test.yml
 services:
   db-test:
     image: postgres:16

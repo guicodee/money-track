@@ -9,15 +9,17 @@ export function startDueTransactionsJob(app: FastifyInstance) {
   let running = false;
 
   const run = async () => {
-    if (running) return; 
+    if (running) return;
     running = true;
+
     try {
       let processed: number;
+
       do {
         processed = await service.execute();
       } while (processed === DUE_BATCH_SIZE); 
     } catch (error) {
-      app.log.error(error, "Falha ao processar transações pendentes");
+      app.log.error(error, "Failed to process transactions pendents");
     } finally {
       running = false;
     }

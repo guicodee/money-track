@@ -1,10 +1,10 @@
 import type { JWT } from "@fastify/jwt";
+import { env } from "@src/env";
 import { createHash, randomUUID } from "node:crypto";
-
 export interface AccessTokenPayload { sub: number; email: string; sid: number }
 export interface RefreshTokenPayload { sub: number; email: string }
 
-const REFRESH_TOKEN_EXPIRES_IN = "7d";
+const REFRESH_TOKEN_EXPIRES_IN = env.JWT_REFRESH_EXPIRES;
 const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export function hashToken(token: string): string {

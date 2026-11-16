@@ -1,14 +1,22 @@
+import { TZDate } from "@date-fns/tz";
+import { addDays as addDaysFn, format, isValid, parseISO, startOfDay } from "date-fns";
+
 const SP_TIMEZONE = "America/Sao_Paulo";
-const SP_OFFSET = "-03:00";
 
 export function isValidDateOnly(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const d = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
+
+  const date = parseISO(value);
+
+  return isValid(date) && format(date, "yyyy-MM-dd") === value;
 }
 
 export function startOfDaySaoPaulo(date: string): Date {
-  return new Date(`${date}T00:00:00${SP_OFFSET}`);
+  const [year, month, day] = date.split("-").map(Number);
+
+  return startOfDay(
+    new TZDate(year, month - 1, day, SP_TIMEZONE),
+  );
 }
 
 export function todayInSaoPaulo(now: Date = new Date()): string {
@@ -16,7 +24,5 @@ export function todayInSaoPaulo(now: Date = new Date()): string {
 }
 
 export function addDays(date: string, days: number): string {
-  const d = new Date(`${date}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
+  return format(addDaysFn(parseISO(date), days), "yyyy-MM-dd");
 }

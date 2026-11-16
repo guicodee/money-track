@@ -1,4 +1,3 @@
-
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 import { loadTestEnv } from "./src/tests/setup/env.ts";
