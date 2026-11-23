@@ -21,7 +21,6 @@ export class SessionRepository implements ISessionRepository {
     return session ?? null;
   }
 
-
   async create(data: CreateSessionDto): Promise<SessionDto> {
     const [session] = await db
       .insert(sessionsTable)
@@ -49,10 +48,10 @@ export class SessionRepository implements ISessionRepository {
 
   async revokeById(id: number): Promise<void> {
     await db
-    .update(sessionsTable)
-    .set({ revokedAt: new Date() })
-    .where(eq(sessionsTable.id, id))
-    .returning({ id: sessionsTable.id, revokedAt: sessionsTable.revokedAt });
+      .update(sessionsTable)
+      .set({ revokedAt: new Date() })
+      .where(eq(sessionsTable.id, id))
+      .returning({ id: sessionsTable.id, revokedAt: sessionsTable.revokedAt });
   }
 
   async revokeAllByUserId(userId: number): Promise<void> {

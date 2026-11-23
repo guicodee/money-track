@@ -7,15 +7,15 @@ import type { IAccountRepository } from "../interfaces/account-repository-interf
 
 export class AccountRepository implements IAccountRepository {
   async create(data: CreateAccountDto): Promise<AccountDto> {
-  const [account] = await db
-    .insert(accountTable)
-    .values({
-      ...data,
-      currentBalance: data.initialBalance ?? "0.00",
-    })
-    .returning();
-  return account;
-}
+    const [account] = await db
+      .insert(accountTable)
+      .values({
+        ...data,
+        currentBalance: data.initialBalance ?? "0.00",
+      })
+      .returning();
+    return account;
+  }
 
   async findByUserId(userId: number): Promise<AccountDto | null> {
     const [account] = await db
@@ -28,22 +28,22 @@ export class AccountRepository implements IAccountRepository {
   }
 
   async update(userId: number, data: UpdateAccountDto): Promise<AccountDto> {
-  const { initialBalance, ...rest } = data;
+    const { initialBalance, ...rest } = data;
 
-  const [account] = await db
-    .update(accountTable)
-    .set({
-      ...rest,
-      ...(initialBalance !== undefined && {
-        initialBalance,
-        currentBalance: sql`${accountTable.currentBalance} + (${initialBalance}::numeric - ${accountTable.initialBalance})`,
-      }),
-    })
-    .where(eq(accountTable.userId, userId))
-    .returning();
+    const [account] = await db
+      .update(accountTable)
+      .set({
+        ...rest,
+        ...(initialBalance !== undefined && {
+          initialBalance,
+          currentBalance: sql`${accountTable.currentBalance} + (${initialBalance}::numeric - ${accountTable.initialBalance})`,
+        }),
+      })
+      .where(eq(accountTable.userId, userId))
+      .returning();
 
-  return account;
-}
+    return account;
+  }
 
   async delete(userId: number): Promise<void> {
     await db.delete(accountTable).where(eq(accountTable.userId, userId));

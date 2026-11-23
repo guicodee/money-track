@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0c10;
+  --color-surface: #12141c;
+  --color-line: #232634;
+  --color-line-soft: #1d202b;
+  --color-line-strong: #2a2e3d;
+  --color-line-axis: #3a3f52;
+  --color-ink: #f2f3f7;
+  --color-ink-muted: #c4c8d6;
+  --color-ink-soft: #8a8fa3;
+  --color-ink-faint: #6b7086;
+  --color-lime: #dfff2e;
+  --color-lime-ink: #0b0c10;
+  --color-income: #3ddc84;
+  --color-income-bg: rgb(61 220 132 / 0.1);
+  --color-income-line: #1f4d36;
+  --color-expense: #ff7a68;
+  --color-expense-bg: rgb(255 122 104 / 0.1);
+  --color-expense-line: #5a2e29;
+  --color-balance-bg: rgb(223 255 46 / 0.1);
+  --color-balance-line: #4a5214;
+  --color-cat-1: #dfff2e;
+  --color-cat-2: #3ddc84;
+  --color-cat-3: #7c83ff;
+  --color-cat-4: #ff7a68;
+  --color-cat-5: #ffb547;
+  --color-cat-6: #4fd1f5;
+  --color-cat-7: #c9a0ff;
+  --color-cat-8: #f2f3f7;
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+  --text-micro: 11px;
+  --text-label: 12px;
+  --text-body: 16px;
+  --text-lead: 18px;
+  --text-amount: 19px;
+  --text-h2: 36px;
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.025em;
+  --text-metric: 44px;
+  --text-metric--line-height: 1;
+  --text-metric--letter-spacing: -0.03em;
+  --text-title: 60px;
+  --text-title--line-height: 1;
+  --text-title--letter-spacing: -0.03em;
+  --text-hero: clamp(56px, 7vw, 92px);
+  --text-hero--line-height: 1;
+  --text-hero--letter-spacing: -0.045em;
+  --tracking-label: 0.08em;
+  --tracking-tag: 0.1em;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --container-page: 1360px;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-ink-soft);
+  }
+
+  .tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-tag);
+    color: var(--color-lime);
+  }
+  .tag::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background-color: var(--color-lime);
+  }
+
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+  }
+
+  .chip {
+    font-size: 13px;
+    color: var(--color-ink-muted);
+    border: 1px solid var(--color-line-strong);
+    padding: 9px 14px;
+    cursor: pointer;
+  }
+  .chip.is-active {
+    background-color: var(--color-lime);
+    border-color: var(--color-lime);
+    color: var(--color-lime-ink);
+    font-weight: 600;
+  }
+
+  .icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+}
